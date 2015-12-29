@@ -17,6 +17,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import park.engine.db.utils.MySql;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -63,7 +65,6 @@ public class GeoMap {
 			city = jsonGeo.getJSONObject(0).getJSONArray("address_components").
 										getJSONObject(3).getString("long_name");
 		} finally {
-			System.out.println("Getting called finalled");
 			geo_c.close();
 		}
 		
@@ -91,46 +92,11 @@ public class GeoMap {
 		cityName = m.findCity(52.264670, 0.374886);
 		System.out.println( cityName );
 		
-		
-		Connection con = null;
-        Statement st = null;
-        ResultSet rs = null;
-
-        String url = "jdbc:mysql://localhost:3306/practice";
-        String user = "root";
-        String password = "mysore159";
-
-        try {
-        	Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection(url, user, password);
-            st = con.createStatement();
-            rs = st.executeQuery("SELECT VERSION()");
-
-            if (rs.next()) {
-                System.out.println(rs.getString(1));
-            }
-
-        } catch (SQLException ex) {
-            Logger lgr = Logger.getLogger(Version.class.getName());
-            lgr.log(Level.SEVERE, ex.getMessage(), ex);
-
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (st != null) {
-                    st.close();
-                }
-                if (con != null) {
-                    con.close();
-                }
-
-            } catch (SQLException ex) {
-                Logger lgr = Logger.getLogger(Version.class.getName());
-                lgr.log(Level.WARNING, ex.getMessage(), ex);
-            }
-        }
+		MySql sql = new MySql("practice");
+		ResultSet rs = sql.executeQuery("select * from pet");
+		while(rs.next()) {
+			System.out.println(rs.getString("name"));
+		}
 	}
 
 }
